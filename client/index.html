@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>QR Code Scanner</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        padding: 20px;
+      }
+      #reader {
+        width: 300px;
+        margin: auto;
+      }
+      #result {
+        margin-top: 20px;
+        font-size: 1.2em;
+        font-weight: bold;
+      }
+      a {
+        color: blue;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>QR Code Scanner</h1>
+    <div id="reader"></div>
+    <p id="result">Scan a QR code to see the result here.</p>
+
+    <!-- Load the library -->
+    <script src="https://unpkg.com/html5-qrcode"></script>
+    <script>
+      function onScanSuccess(decodedText, decodedResult) {
+        const resultEl = document.getElementById("result");
+        resultEl.innerHTML = "QR Code: " + decodedText;
+
+        // If it's a link, make it clickable
+        if (decodedText.startsWith("http")) {
+          resultEl.innerHTML = `QR Code: <a href="${decodedText}" target="_blank">${decodedText}</a>`;
+        }
+      }
+
+      function onScanFailure(error) {
+        // You can ignore scan failures or log them
+        // console.warn(`Scan error: ${error}`);
+      }
+
+      // Create the scanner
+      const html5QrcodeScanner = new Html5QrcodeScanner("reader", {
+        fps: 10,
+        qrbox: 250,
+      });
+
+      html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+    </script>
+  </body>
+</html>
