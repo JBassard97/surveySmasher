@@ -1,5 +1,5 @@
 // bot.js
-const { chromium } = require("playwright");
+const { chromium } = require("playwright-core");
 
 module.exports = async function handleScannedUrl(url) {
   let browser;
@@ -7,6 +7,7 @@ module.exports = async function handleScannedUrl(url) {
     browser = await chromium.launch({
       headless: true,
       slowMo: 100,
+      executablePath: "/usr/bin/chromium-browser", // system chromium
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
     });
     const page = await browser.newPage();
