@@ -8,7 +8,8 @@
       body {
         font-family: Arial, sans-serif;
         text-align: center;
-        padding: 20px;
+        overflow-x: hidden;
+        background-color: rgb(255, 177, 190);
       }
       #reader {
         width: 300px;
@@ -25,7 +26,7 @@
     </style>
   </head>
   <body>
-    <h1>QR Code Scanner</h1>
+    <h1>Survey Smasher</h1>
     <div id="reader"></div>
     <p id="result">Scan a QR code to see the result here.</p>
 
@@ -36,9 +37,38 @@
         const resultEl = document.getElementById("result");
         resultEl.innerHTML = "QR Code: " + decodedText;
 
-        // If it's a link, make it clickable
+        // If it's a link, make it clickable and send to server
         if (decodedText.startsWith("http")) {
           resultEl.innerHTML = `QR Code: <a href="${decodedText}" target="_blank">${decodedText}</a>`;
+
+          fetch("/api/scan", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ data: decodedText }),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              console.log("Server response:", data);
+
+              // Display the server status below the link
+              const statusEl = document.createElement("div");
+              statusEl.style.marginTop = "10px";
+              statusEl.style.fontWeight = "bold";
+
+              // Assuming your server returns { url: ..., status: "Success" } or "Failure"
+              statusEl.innerText = `Status: ${data.status || "Unknown"}`;
+              resultEl.appendChild(statusEl);
+            })
+            .catch((error) => {
+              console.error("Error sending data to server:", error);
+
+              const statusEl = document.createElement("div");
+              statusEl.style.marginTop = "10px";
+              statusEl.style.fontWeight = "bold";
+              statusEl.style.color = "red";
+              statusEl.innerText = "Status: Failure (could not reach server)";
+              resultEl.appendChild(statusEl);
+            });
         }
       }
 
