@@ -4,7 +4,11 @@ const { chromium } = require("playwright");
 module.exports = async function handleScannedUrl(url) {
   let browser;
   try {
-    browser = await chromium.launch({ headless: true, slowMo: 100 });
+    browser = await chromium.launch({
+      headless: true,
+      slowMo: 100,
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    });
     const page = await browser.newPage();
 
     console.log("Navigating to scanned URL...");
