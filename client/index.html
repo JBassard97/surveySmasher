@@ -17,7 +17,6 @@
       }
       #result {
         margin-top: 20px;
-        font-size: 1.2em;
         font-weight: bold;
       }
       a {
@@ -33,47 +32,61 @@
     <!-- Load the library -->
     <script src="https://unpkg.com/html5-qrcode"></script>
     <script>
-      function onScanSuccess(decodedText, decodedResult) {
+      let isSending = false; // Prevent duplicate POSTs while one is in progress
+      let lastUrlSent = null; // Prevent sending the same URL repeatedly
+      let statusEl = null; // Reuse the same status element
+
+      function onScanSuccess(decodedText) {
         const resultEl = document.getElementById("result");
-        resultEl.innerHTML = "QR Code: " + decodedText;
 
-        // If it's a link, make it clickable and send to server
-        if (decodedText.startsWith("http")) {
-          resultEl.innerHTML = `QR Code: <a href="${decodedText}" target="_blank">${decodedText}</a>`;
+        // Only send if it's a URL and different from last sent
+        if (!decodedText.startsWith("http") || decodedText === lastUrlSent)
+          return;
 
-          fetch("/api/scan", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ data: decodedText }),
-          })
-            .then((response) => response.json())
-            .then((data) => {
-              console.log("Server response:", data);
+        lastUrlSent = decodedText;
+        resultEl.innerHTML = `QR Code: <a href="${decodedText}" target="_blank">${decodedText}</a>`;
 
-              // Display the server status below the link
-              const statusEl = document.createElement("div");
-              statusEl.style.marginTop = "10px";
-              statusEl.style.fontWeight = "bold";
+        if (isSending) return;
+        isSending = true;
 
-              // Assuming your server returns { url: ..., status: "Success" } or "Failure"
-              statusEl.innerText = `Status: ${data.status || "Unknown"}`;
-              resultEl.appendChild(statusEl);
-            })
-            .catch((error) => {
-              console.error("Error sending data to server:", error);
-
-              const statusEl = document.createElement("div");
-              statusEl.style.marginTop = "10px";
-              statusEl.style.fontWeight = "bold";
-              statusEl.style.color = "red";
-              statusEl.innerText = "Status: Failure (could not reach server)";
-              resultEl.appendChild(statusEl);
-            });
+        // Create or reuse the status element
+        if (!statusEl) {
+          statusEl = document.createElement("div");
+          statusEl.style.marginTop = "10px";
+          statusEl.style.fontWeight = "bold";
+          resultEl.appendChild(statusEl);
         }
+
+        // Show loading while waiting for server
+        statusEl.style.color = "orange";
+        statusEl.innerText = "Status: Loading…";
+
+        fetch("/api/scan", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ data: decodedText }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            console.log("Server response:", data);
+
+            statusEl.style.color = data.status === "Success" ? "green" : "red";
+            statusEl.innerText = `Status: ${data.status || "Unknown"}`;
+
+            isSending = false; // unlock after server responds
+          })
+          .catch((error) => {
+            console.error("Error sending data to server:", error);
+
+            statusEl.style.color = "red";
+            statusEl.innerText = "Status: Failure (could not reach server)";
+
+            isSending = false; // unlock even on error
+          });
       }
 
       function onScanFailure(error) {
-        // You can ignore scan failures or log them
+        // Optional: log scan failures
         // console.warn(`Scan error: ${error}`);
       }
 

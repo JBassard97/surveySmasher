@@ -2,19 +2,26 @@
 const { chromium } = require("playwright");
 
 module.exports = async function handleScannedUrl(url) {
+  let browser;
   try {
-    const browser = await chromium.launch({ headless: true, slowMo: 100 });
+    browser = await chromium.launch({ headless: true, slowMo: 100 });
     const page = await browser.newPage();
 
     console.log("Navigating to scanned URL...");
-    await page.goto(url);
 
-    console.log("Bot finished automation!");
+    // Attempt to navigate and get the response
+    const response = await page.goto(url, { timeout: 10000 }); // 10s timeout
+    if (!response || !response.ok()) {
+      console.log("Failed to load page or got bad status:", response?.status());
+      return "Failure";
+    }
+
+    console.log("Page loaded successfully!");
     await browser.close();
-
-    return "Success"; // everything worked
+    return "Success";
   } catch (err) {
     console.error("Bot encountered an error:", err);
-    return "Failure"; // something went wrong
+    if (browser) await browser.close();
+    return "Failure";
   }
 };
