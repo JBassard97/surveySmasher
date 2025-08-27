@@ -2,30 +2,18 @@ const express = require("express");
 const path = require("path");
 const handleScannedUrl = require("./bot");
 
-const PORT = process.env.PORT || 3000;
 const app = express();
+const PORT = process.env.PORT || 3000;
 
-app.use(express.urlencoded({ extended: true }));
+// Serve client static files
+app.use(express.static(path.join(__dirname, "../client")));
 app.use(express.json());
 
-// Serve the client folder
-app.use(express.static(path.join(__dirname, "..", "client")));
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "..", "client", "index.html"));
-});
-
-// client sends the scanned URL here
+// API endpoint for QR scan
 app.post("/api/scan", async (req, res) => {
-  const { data } = req.body;
-  if (!data) {
-    return res.status(400).json({ error: "No URL provided" });
-  }
-
-  console.log("Received QR URL:", data);
-
-  const result = await handleScannedUrl(data);
-
-  res.json({ url: data, status: result });
+  const url = req.body.data;
+  const status = await handleScannedUrl(url);
+  res.json({ url, status });
 });
 
 app.listen(PORT, () => {

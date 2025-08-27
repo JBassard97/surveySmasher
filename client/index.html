@@ -3,12 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>QR Code Scanner</title>
+    <title>Survey Smasher</title>
     <style>
       body {
         font-family: Arial, sans-serif;
         text-align: center;
-        overflow-x: hidden;
         background-color: rgb(255, 177, 190);
       }
       #reader {
@@ -17,6 +16,7 @@
       }
       #result {
         margin-top: 20px;
+        font-size: 1.2em;
         font-weight: bold;
       }
       a {
@@ -29,17 +29,14 @@
     <div id="reader"></div>
     <p id="result">Scan a QR code to see the result here.</p>
 
-    <!-- Load the library -->
     <script src="https://unpkg.com/html5-qrcode"></script>
     <script>
-      let isSending = false; // Prevent duplicate POSTs while one is in progress
-      let lastUrlSent = null; // Prevent sending the same URL repeatedly
-      let statusEl = null; // Reuse the same status element
+      let isSending = false;
+      let lastUrlSent = null;
 
       function onScanSuccess(decodedText) {
         const resultEl = document.getElementById("result");
 
-        // Only send if it's a URL and different from last sent
         if (!decodedText.startsWith("http") || decodedText === lastUrlSent)
           return;
 
@@ -49,53 +46,40 @@
         if (isSending) return;
         isSending = true;
 
-        // Create or reuse the status element
-        if (!statusEl) {
-          statusEl = document.createElement("div");
-          statusEl.style.marginTop = "10px";
-          statusEl.style.fontWeight = "bold";
-          resultEl.appendChild(statusEl);
-        }
-
-        // Show loading while waiting for server
-        statusEl.style.color = "orange";
-        statusEl.innerText = "Status: Loading…";
+        // Show loading status
+        const statusEl = document.createElement("div");
+        statusEl.style.marginTop = "10px";
+        statusEl.style.fontWeight = "bold";
+        statusEl.innerText = "Status: Loading...";
+        resultEl.appendChild(statusEl);
 
         fetch("/api/scan", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ data: decodedText }),
         })
-          .then((response) => response.json())
+          .then((res) => res.json())
           .then((data) => {
-            console.log("Server response:", data);
-
             statusEl.style.color = data.status === "Success" ? "green" : "red";
-            statusEl.innerText = `Status: ${data.status || "Unknown"}`;
-
-            isSending = false; // unlock after server responds
+            statusEl.innerText = `Status: ${data.status}`;
+            isSending = false;
           })
-          .catch((error) => {
-            console.error("Error sending data to server:", error);
-
+          .catch((err) => {
+            console.error(err);
             statusEl.style.color = "red";
-            statusEl.innerText = "Status: Failure (could not reach server)";
-
-            isSending = false; // unlock even on error
+            statusEl.innerText = "Status: Failure (server error)";
+            isSending = false;
           });
       }
 
       function onScanFailure(error) {
-        // Optional: log scan failures
-        // console.warn(`Scan error: ${error}`);
+        /* optional logging */
       }
 
-      // Create the scanner
       const html5QrcodeScanner = new Html5QrcodeScanner("reader", {
         fps: 10,
         qrbox: 250,
       });
-
       html5QrcodeScanner.render(onScanSuccess, onScanFailure);
     </script>
   </body>
