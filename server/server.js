@@ -7,7 +7,7 @@ const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// serve client folder one level up
+// Serve the client folder
 app.use(express.static(path.join(__dirname, "..", "client")));
 
 app.get("/", (req, res) => {
@@ -15,5 +15,5 @@ app.get("/", (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`API server running on port ${PORT}!`);
+  console.log(`Server running on port ${PORT}`);
 });
