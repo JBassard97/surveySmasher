@@ -4,7 +4,8 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "cd server && node server.js",
+    "test": "npx playwright codegen https://survey.order.marcos.com/survey?id=YkZDWHMvSU0rMCs5NndHN0I3M2FQdz09"
   },
   "keywords": [],
   "author": "",
