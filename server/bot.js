@@ -6,7 +6,7 @@ async function handleScannedUrl(url) {
     console.log("Received QR URL:", url);
 
     const browser = await chromium.launch({
-      headless: false,
+      headless: true,
       slowMo: 50,
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
     });
