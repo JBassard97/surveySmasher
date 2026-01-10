@@ -12,8 +12,8 @@ async function handleScannedUrl(url) {
     });
 
     const page = await browser.newPage();
-    console.log("On 1st page...");
     await page.goto(url, { waitUntil: "networkidle" });
+    console.log("On 1st page...");
     await page.getByRole("button", { name: "Next" }).click();
 
     console.log("On 2nd page...");
@@ -79,7 +79,6 @@ async function handleScannedUrl(url) {
     await browser.close();
     return "Success";
   } catch (err) {
-    await browser.close();
     console.error("Bot encountered an error:", err);
     return `Failure (${err.message})`;
   }
