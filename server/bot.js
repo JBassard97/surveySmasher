@@ -7,7 +7,7 @@ async function handleScannedUrl(url) {
 
     const browser = await chromium.launch({
       headless: true,
-      slowMo: 100,
+      slowMo: 50,
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
     });
 
@@ -72,7 +72,7 @@ async function handleScannedUrl(url) {
     return "Success";
   } catch (err) {
     console.error("Bot encountered an error:", err);
-    return "Failure";
+    return `Failure (${err.message})`;
   }
 }
 

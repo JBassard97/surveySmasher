@@ -1,7 +1,18 @@
 function generateFakeEmail() {
-  const providers = ["gmail.com", "yahoo.com", "outlook.com", "icloud.com"];
+  const providers = [
+    "gmail.com",
+    "hotmail.com",
+    "live.com",
+    "yahoo.com",
+    "outlook.com",
+    "icloud.com",
+    "comcast.net",
+  ];
   const chars = "abcdefghijklmnopqrstuvwxyz";
   const lastNames = [
+    "white",
+    "nelson",
+    "jones",
     "smith",
     "johnson",
     "black",
@@ -11,6 +22,12 @@ function generateFakeEmail() {
     "brown",
     "davis",
     "garcia",
+    "rodriguez",
+    "hernandez",
+    "gonzalez",
+    "moore",
+    "wright",
+    "taylor",
     "lopez",
     "martinez",
     "schmidt",

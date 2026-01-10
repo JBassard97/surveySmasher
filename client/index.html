@@ -50,6 +50,7 @@
         const statusEl = document.createElement("div");
         statusEl.style.marginTop = "10px";
         statusEl.style.fontWeight = "bold";
+        statusEl.style.color = "blue";
         statusEl.innerText = "Status: Loading...";
         resultEl.appendChild(statusEl);
 
@@ -67,7 +68,7 @@
           .catch((err) => {
             console.error(err);
             statusEl.style.color = "red";
-            statusEl.innerText = "Status: Failure (server error)";
+            statusEl.innerText = `Status: ${data.status}`;
             isSending = false;
           });
       }
