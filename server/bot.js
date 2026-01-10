@@ -84,8 +84,8 @@ async function handleScannedUrl(url) {
   }
 }
 
-handleScannedUrl(
-  "https://survey.order.marcos.com/survey?id=T2R6dVBGT3I5SHBWZ2tOL0dWem1HUT09%22"
-);
+// handleScannedUrl(
+//   "https://survey.order.marcos.com/survey?id=T2R6dVBGT3I5SHBWZ2tOL0dWem1HUT09%22"
+// );
 
 module.exports = { handleScannedUrl };
