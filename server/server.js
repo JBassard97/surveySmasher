@@ -1,6 +1,6 @@
 const express = require("express");
 const path = require("path");
-const handleScannedUrl = require("./bot");
+const { handleScannedUrl } = require("./bot");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
