@@ -24,7 +24,12 @@ async function handleScannedUrl(url) {
     logs.push("Successfully navigated to URL");
 
     logs.push("Clicking Next on page 1");
-    await page.getByRole("button", { name: "Next" }).click();
+    const page1NextButton = page.getByRole("button", { name: "Next" });
+    logs.push("Located Next button on page 1");
+    await page1NextButton.waitFor({state: "visible", timeout: 5000});
+    logs.push("Waited for Next button on page 1 to become visible before clicking");
+    await page1NextButton.click();
+    logs.push("Next button on page 1 clicked");
     logs.push("Page 1 complete");
 
     logs.push("Selecting 'Highly Satisfied' on page 2");
