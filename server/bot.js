@@ -23,10 +23,38 @@ async function handleScannedUrl(url) {
     await page.goto(url, {waitUntil: "domcontentloaded"});
     logs.push("Successfully navigated to URL");
 
-    logs.push("Locating Next on page 1");
-    const next = page.locator("text=Next");
-    await next.waitFor({state: "visible"});
-    await next.click();
+    logs.push("Locating Next on page 1 (robust)");
+    // const next = page.locator("text=Next");
+    // await next.waitFor({state: "visible"});
+    // await next.click();
+
+    let clicked = false;
+
+    const next = page.locator("button", {hasText: /next/i});
+    if (await next.count()) {
+      logs.push("Found Next on 1st page");
+      await next.first().click();
+      clicked = true;
+    }
+
+    if (!clicked) {
+      logs.push("Searching frames for Next...");
+      for (const frame of page.frames()) {
+        const frameNext = frame.locator("button", {hasText: /next/i});
+        if (await frameNext.count()) {
+          logs.push(`Found Next inside frame: ${frame.url().slice(0,80)}...`);
+          await frameNext.first().click();
+          clicked = true;
+          break;
+            }
+        }
+    }
+
+    if (!clicked) {
+      logs.push("ERROR: Could not find Next button on page 1");
+      throw new Error("Next Button not found on page 1");
+    }
+    
     logs.push("Next button on page 1 clicked");
     logs.push("Page 1 complete");
 
