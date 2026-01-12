@@ -20,11 +20,13 @@ async function handleScannedUrl(url) {
     logs.push("Page successfully opened");
 
     logs.push("Navigating to URL");
-    await page.goto(url);
+    await page.goto(url, {waitUntil: "domcontentloaded"});
     logs.push("Successfully navigated to URL");
 
-    logs.push("Clicking Next on page 1");
-    await page.getByText("Next", {exact: false}).click();
+    logs.push("Locating Next on page 1");
+    const next = page.locator("text=Next");
+    await next.waitFor({state: "visible"});
+    await next.click();
     logs.push("Next button on page 1 clicked");
     logs.push("Page 1 complete");
 
