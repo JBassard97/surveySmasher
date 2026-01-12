@@ -20,7 +20,7 @@ async function handleScannedUrl(url) {
     logs.push("Page successfully opened");
 
     logs.push("Navigating to URL");
-    await page.goto(url, { waitUntil: "networkidle" });
+    await page.goto(url);
     logs.push("Successfully navigated to URL");
 
     logs.push("Clicking Next on page 1");
