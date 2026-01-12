@@ -24,7 +24,7 @@ async function handleScannedUrl(url) {
     logs.push("Successfully navigated to URL");
 
     logs.push("Clicking Next on page 1");
-    await page.getByRole("button", { name: "Next" }).click();
+    await page.getByText("Next", {exact: false).click();
     logs.push("Next button on page 1 clicked");
     logs.push("Page 1 complete");
 
