@@ -87,24 +87,45 @@ async function handleScannedUrl(url) {
     await page.getByRole("button", { name: "Next" }).click();
     logs.push("Page 4 complete");
 
-    logs.push("Answering 'No' on page 5");
-    await page.getByText("No").click();
+    logs.push("On Page 5");
+
+    await page.locator("label").first().click();
+    await page
+      .locator("div:nth-child(2) > .surv-answ > div > div:nth-child(2) > label")
+      .click();
+    await page
+      .locator("div:nth-child(3) > .surv-answ > div > div:nth-child(2) > label")
+      .click();
+    await page
+      .locator("div:nth-child(4) > .surv-answ > div > div:nth-child(2) > label")
+      .click();
+    await page
+      .locator("div:nth-child(5) > .surv-answ > div > div:nth-child(2) > label")
+      .click();
+    await page
+      .locator("div:nth-child(6) > .surv-answ > div > div:nth-child(2) > label")
+      .click();
 
     logs.push("Clicking Next on page 5");
     await page.getByRole("button", { name: "Next" }).click();
     logs.push("Page 5 complete");
 
-    logs.push("Answering 'Highly Likely' on page 6");
+    logs.push("On page 6");
+    await page.getByText("No").click();
+    await page.getByRole("button", { name: "Next" }).click();
+    logs.push("Page 6 complete");
+
+    logs.push("On page 7");
     await page.getByText("Highly Likely").first().click();
     logs.push("Clicked first Highly Likely");
     await page.getByText("Highly Likely").nth(1).click();
     logs.push("Clicked second Highly Likely");
 
-    logs.push("Clicking Next on page 6");
+    logs.push("Clicking Next on page 7");
     await page.getByRole("button", { name: "Next" }).click();
-    logs.push("Page 6 complete");
+    logs.push("Page 7 complete");
 
-    logs.push("Answering 'Yes', 'Yes', 'Twice' on page 7");
+    logs.push("Answering 'Yes', 'Yes', 'Twice' on page 8");
     await page.getByText("Yes").first().click();
     logs.push("Clicked first Yes");
     await page.getByText("Yes").nth(1).click();
@@ -112,9 +133,9 @@ async function handleScannedUrl(url) {
     await page.getByText("Twice").click();
     logs.push("Clicked Twice");
 
-    logs.push("Clicking Next on page 7");
+    logs.push("Clicking Next on page 8");
     await page.getByRole("button", { name: "Next" }).click();
-    logs.push("Page 7 complete");
+    logs.push("Page 8 complete");
 
     logs.push("Entering email on final page");
     await page.getByRole("textbox").dblclick();
