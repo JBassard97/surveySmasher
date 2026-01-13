@@ -84,26 +84,33 @@ async function handleScannedUrl(url) {
 
     logs.push("On Page 5");
 
-    await page.locator("label").first().click();
-    await page
-      .locator("div:nth-child(2) > .surv-answ > div > div:nth-child(2) > label")
-      .click();
-    await page
-      .locator("div:nth-child(3) > .surv-answ > div > div:nth-child(2) > label")
-      .click();
-    await page
-      .locator("div:nth-child(4) > .surv-answ > div > div:nth-child(2) > label")
-      .click();
-    await page
-      .locator("div:nth-child(5) > .surv-answ > div > div:nth-child(2) > label")
-      .click();
-    await page
-      .locator("div:nth-child(6) > .surv-answ > div > div:nth-child(2) > label")
-      .click();
+    // small pause to let UI settle
+    await page.waitForTimeout(2000);
+
+    const questions5 = page.locator(".surv-answ");
+    const count5 = await questions5.count();
+
+    logs.push(`Found ${count5} questions on page 5`);
+
+    for (let i = 0; i < count5; i++) {
+      logs.push(`Clicking option 2 for question ${i + 1}`);
+
+      const option = questions5
+        .nth(i)
+        .locator("div > div:nth-child(2) > label");
+
+      if (await option.count()) {
+        await option.click({ force: true });
+      } else {
+        logs.push(`Question ${i + 1} has no second option — skipped`);
+      }
+    }
 
     logs.push("Clicking Next on page 5");
     await page.getByRole("button", { name: "Next" }).click();
     logs.push("Page 5 complete");
+
+    // ----------------------------------------------------
 
     logs.push("On page 6");
     await page.getByText("No").click();
