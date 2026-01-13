@@ -44,30 +44,23 @@ async function handleScannedUrl(url) {
 
     logs.push("Answering all 'Highly Satisfied' on page 3");
 
-    await page.locator("label").first().click();
-    logs.push("Clicked first option");
+    const questions = page.locator(".surv-answ");
+    const count = await questions.count();
 
-    for (let i = 2; i <= 9; i++) {
-      logs.push(`Clicking option ${i} (Highly Satisfied)`);
-      await page
-        .locator(
-          `div:nth-child(${i}) > .surv-answ > div > div:nth-child(2) > label`
-        )
-        .click();
+    logs.push(`Found ${count} questions on page 3`);
+
+    for (let i = 0; i < count; i++) {
+      logs.push(`Clicking Highly Satisfied for question ${i + 1}`);
+
+      const highlySatisfied = questions
+        .nth(i)
+        .locator("div > div:nth-child(2) > label");
+
+      await highlySatisfied.waitFor({ state: "visible", timeout: 5000 });
+      await highlySatisfied.click();
     }
 
-    const tenthHighlySatisfied = page.locator(
-      "div:nth-child(10) > .surv-answ > div > div:nth-child(2) > label"
-    );
-
-    logs.push("Checking if 10th option exists");
-
-    if (await tenthHighlySatisfied.count()) {
-      logs.push("10th option found — clicking it");
-      await tenthHighlySatisfied.click();
-    } else {
-      logs.push("10th option not present — skipping");
-    }
+    logs.push("All Highly Satisfied clicked on page 3");
 
     logs.push("Clicking Next on page 3");
     await page.getByRole("button", { name: "Next" }).click();
@@ -86,6 +79,8 @@ async function handleScannedUrl(url) {
     logs.push("Clicking Next on page 4");
     await page.getByRole("button", { name: "Next" }).click();
     logs.push("Page 4 complete");
+
+    // ----------------------------------------------------
 
     logs.push("On Page 5");
 
