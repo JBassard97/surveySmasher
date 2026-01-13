@@ -1,5 +1,5 @@
 const { chromium } = require("playwright");
-const { generateFakeEmail } = require("./fakeEmail");
+// const { generateFakeEmail } = require("./fakeEmail");
 
 async function handleScannedUrl(url) {
   let logs = [];
@@ -23,39 +23,12 @@ async function handleScannedUrl(url) {
     await page.goto(url, { waitUntil: "domcontentloaded" });
     logs.push("Successfully navigated to URL");
 
-    logs.push("Locating Next on page 1 (robust)");
-    // const next = page.locator("text=Next");
-    // await next.waitFor({state: "visible"});
-    // await next.click();
+    logs.push("Waiting 60 seconds for page to REALLY load");
+    await page.waitForTimeout(60000);
+    logs.push("Waited 60 seconds");
 
-    logs.push("Dumping clickable elements...");
-
-    const clickables = await page.evaluate(() => {
-      const els = Array.from(
-        document.querySelectorAll(
-          'button, a, [role="button"], input[type=button], input[type=submit], div, span'
-        )
-      );
-      return els
-        .filter((e) => {
-          const r = e.getBoundingClientRect();
-          return r.width > 0 && r.height > 0;
-        })
-        .slice(0, 50)
-        .map((e) => ({
-          tag: e.tagName,
-          role: e.getAttribute("role"),
-          text: e.innerText?.trim().slice(0, 50),
-          aria: e.getAttribute("aria-label"),
-          classes: e.className,
-        }));
-    });
-
-    for (const c of clickables) {
-      logs.push(
-        `EL: <${c.tag}> role=${c.role} aria=${c.aria} text="${c.text}" class="${c.classes}"`
-      );
-    }
+    logs.push("Attempting to click Next");
+    await page.getByRole("button", { name: "Next" }).click();
 
     logs.push("Next button on page 1 clicked");
     logs.push("Page 1 complete");
@@ -71,5 +44,9 @@ async function handleScannedUrl(url) {
     )})`;
   }
 }
+
+handleScannedUrl(
+  "https://survey.www.marcos.com/survey?qr=NmEvY3FvaTdJemN1dFNtMzFRdnlIWjJBZUFZQUkrV2VESFJnWjRNQWsxVDBvS255T284OTVHNE1NMklMTnRNeVRXL2dseXVqMVl5ZEY0K09KclQ3MlE9PQ=="
+);
 
 module.exports = { handleScannedUrl };

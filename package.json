@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start": "cd server && node server.js",
-    "test": "npx playwright codegen https://survey.order.marcos.com/survey?id=YkZDWHMvSU0rMCs5NndHN0I3M2FQdz09"
+    "test": "npx playwright codegen https://survey.www.marcos.com/survey?qr=NmEvY3FvaTdJemN1dFNtMzFRdnlIWjJBZUFZQUkrV2VESFJnWjRNQWsxVDBvS255T284OTVHNE1NMklMTnRNeVRXL2dseXVqMVl5ZEY0K09KclQ3MlE9PQ=="
   },
   "keywords": [],
   "author": "",
