@@ -124,7 +124,9 @@ async function handleScannedUrl(url) {
 
     // ----------------------------------------------------
 
-    logs.push("Answering 'Yes', 'Twice' on page 8");
+    page.waitForTimeout(2000);
+
+    logs.push("On page 8");
     await page.getByText("Yes").click();
     logs.push("Clicked Yes");
     // await page.getByText("Yes").nth(1).click();
