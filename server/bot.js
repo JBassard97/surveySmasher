@@ -20,12 +20,12 @@ async function handleScannedUrl(url) {
     logs.push("Page successfully opened");
 
     logs.push("Navigating to URL");
-    await page.goto(url, { waitUntil: "domcontentloaded"});
+    await page.goto(url, { waitUntil: "domcontentloaded" });
     logs.push("Successfully navigated to URL");
 
-    logs.push("Waiting 60 seconds for page to REALLY load");
-    await page.waitForTimeout(60000);
-    logs.push("Waited 60 seconds");
+    logs.push("Waiting 50 seconds for page to REALLY load");
+    await page.waitForTimeout(50000);
+    logs.push("Waited 50 seconds");
 
     logs.push("Attempting to click Next");
     await page.getByRole("button", { name: "Next" }).click();
@@ -127,11 +127,11 @@ async function handleScannedUrl(url) {
     page.waitForTimeout(2000);
 
     logs.push("On page 8");
-    await page.getByText("Yes").click();
+    await page.getByText("Yes").click({ force: true });
     logs.push("Clicked Yes");
     // await page.getByText("Yes").nth(1).click();
     // logs.push("Clicked second Yes");
-    await page.getByText("Twice").click();
+    await page.getByText("Twice").click({ force: true });
     logs.push("Clicked Twice");
 
     logs.push("Clicking Next on page 8");
