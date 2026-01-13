@@ -10,7 +10,7 @@ async function handleScannedUrl(url) {
 
     const browser = await chromium.launch({
       headless: true,
-      slowMo: 150,
+      slowMo: 100,
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
     });
     logs.push("Browser successfully launched");
@@ -20,7 +20,7 @@ async function handleScannedUrl(url) {
     logs.push("Page successfully opened");
 
     logs.push("Navigating to URL");
-    await page.goto(url);
+    await page.goto(url, { waitUntil: "domcontentloaded"});
     logs.push("Successfully navigated to URL");
 
     logs.push("Waiting 60 seconds for page to REALLY load");
@@ -110,6 +110,8 @@ async function handleScannedUrl(url) {
     await page.getByRole("button", { name: "Next" }).click();
     logs.push("Page 6 complete");
 
+    // ----------------------------------------------------
+
     logs.push("On page 7");
     await page.getByText("Highly Likely").first().click();
     logs.push("Clicked first Highly Likely");
@@ -120,17 +122,21 @@ async function handleScannedUrl(url) {
     await page.getByRole("button", { name: "Next" }).click();
     logs.push("Page 7 complete");
 
-    logs.push("Answering 'Yes', 'Yes', 'Twice' on page 8");
-    await page.getByText("Yes").first().click();
-    logs.push("Clicked first Yes");
-    await page.getByText("Yes").nth(1).click();
-    logs.push("Clicked second Yes");
+    // ----------------------------------------------------
+
+    logs.push("Answering 'Yes', 'Twice' on page 8");
+    await page.getByText("Yes").click();
+    logs.push("Clicked Yes");
+    // await page.getByText("Yes").nth(1).click();
+    // logs.push("Clicked second Yes");
     await page.getByText("Twice").click();
     logs.push("Clicked Twice");
 
     logs.push("Clicking Next on page 8");
     await page.getByRole("button", { name: "Next" }).click();
     logs.push("Page 8 complete");
+
+    // ----------------------------------------------------
 
     logs.push("Entering email on final page");
     await page.getByRole("textbox").dblclick();
