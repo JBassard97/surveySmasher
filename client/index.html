@@ -62,7 +62,9 @@
         })
           .then((res) => res.json())
           .then((data) => {
-            statusEl.style.color = data.status === "Success" ? "green" : "red";
+            statusEl.style.color = data.status.startsWith("Success")
+              ? "green"
+              : "red";
             statusEl.innerText = `Status: ${data.status}`;
             isSending = false;
           })
