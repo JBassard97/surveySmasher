@@ -28,7 +28,12 @@ async function handleScannedUrl(url) {
     logs.push("Waited 50 seconds");
 
     logs.push("Attempting to click Next");
-    await page.getByRole("button", { name: "Next" }).click();
+    const next = page.getByRole("button", { name: "Next" });
+    logs.push(`Next visible: ${await next.isVisible()}`);
+    logs.push(`Next enabled: ${await next.isEnabled()}`);
+    logs.push(`Next attached: ${await next.count()}`);
+    await next.scrollIntoViewIfNeeded();
+    await next.click({force: true, timeout: 5000});
     logs.push("Next button on page 1 clicked");
     logs.push("Page 1 complete");
 
@@ -37,7 +42,7 @@ async function handleScannedUrl(url) {
     logs.push("Selecting 'Highly Satisfied' on page 2");
     await page.getByText("Highly Satisfied").click();
     logs.push("Clicking Next on page 2");
-    await page.getByRole("button", { name: "Next" }).click();
+    await page.getByRole("button", { name: "Next" }).click({force: true, timeout: 5000});
     logs.push("Page 2 complete");
 
     // ----------------------------------------------------
